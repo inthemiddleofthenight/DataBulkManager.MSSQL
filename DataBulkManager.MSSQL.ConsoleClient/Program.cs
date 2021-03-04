@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Diagnostics;
 
 namespace DataBulkManager.MSSQL.ConsoleClient
 {
@@ -8,11 +9,39 @@ namespace DataBulkManager.MSSQL.ConsoleClient
     {
         static void Main()
         {
-            using (SqlConnection sqlConnection = new SqlConnection(@"Data Source=ELIJAH-PC\SQLEXPRESS;Initial Catalog=BulkTest;Integrated Security=true"))
+            try
             {
-                Bulk bulk = new Bulk(sqlConnection);
-                bulk.Insert<Entity>(GetMockEntities(50000));
+                using (SqlConnection sqlConnection = new SqlConnection(@"Data Source=ELIJAH-PC\SQLEXPRESS;Initial Catalog=BulkTest;Integrated Security=true"))
+                {
+                    Bulk bulk = new Bulk(sqlConnection);
+                  
+                    var entities1 = GetMockEntities(50000);
+                    
+                    Stopwatch stopwatch = Stopwatch.StartNew();
+                    bulk.Insert<Entity>(entities1);
+                    stopwatch.Stop();
+                    Console.WriteLine($"50000 {stopwatch.Elapsed}");
+
+                    entities1 = GetMockEntities(100000);
+
+                    stopwatch.Restart();
+                    bulk.Insert<Entity>(entities1);
+                    stopwatch.Stop();
+                    Console.WriteLine($"100000 {stopwatch.Elapsed}");
+
+                    entities1 = GetMockEntities(300000);
+
+                    stopwatch.Restart();
+                    bulk.Insert<Entity>(entities1);
+                    stopwatch.Stop();
+                    Console.WriteLine($"300000 {stopwatch.Elapsed}");
+                }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            Console.ReadLine();
         }
 
         private static IEnumerable<Entity> GetMockEntities(int count)
@@ -27,7 +56,8 @@ namespace DataBulkManager.MSSQL.ConsoleClient
                     ShortName = $"name {i}",
                     Count = i * 4,
                     Date = DateTime.Now.AddDays(i),
-                    Time = DateTime.UtcNow.TimeOfDay
+                    Time = DateTime.UtcNow.TimeOfDay,
+                    Guid = Guid.NewGuid()
                 });
             }
 
