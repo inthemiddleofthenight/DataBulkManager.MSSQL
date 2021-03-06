@@ -15,7 +15,7 @@ Create mapping data class
  [BulkTable("test.TestEntity")] 
  public class Entity
  {
- 		/*ignore property without [BulkColumn] attribute - default name is nameof(Property)*/
+ 	     	/*ignore property without [BulkColumn] attribute - default name is nameof(Property)*/
         [BulkColumn]
         public int Count { get; set; }
         
@@ -48,6 +48,6 @@ IEnumerable<Entity> entities = Array.Empty<Entity>();
 using (SqlConnection sqlConnection = new SqlConnection(@"{connectionString}"))
 {
       Bulk bulk = new Bulk(sqlConnection);
-      bulk.Insert<Entity>(entities1);
+      bulk.Insert<Entity>(entities);
 }
 ```
