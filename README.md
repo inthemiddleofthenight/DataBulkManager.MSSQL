@@ -2,12 +2,16 @@
 
 Fast bulk insert data into MSSQL database.
 
+**NuGet Link**
+
+[https://www.nuget.org/packages/DataBulkManager.MSSQL](https://www.nuget.org/packages/DataBulkManager.MSSQL)
+
 **Example**
 
 Create mapping data class
 
 ```
-/* without attribute target table name resolved as 'dbo.{nameof(Class)}'  */
+/* without attribute target table name resolved as 'dbo.{nameof(Entity)}'  */
  [BulkTable("test.TestEntity")] 
  public class Entity
  {
@@ -39,12 +43,11 @@ Create mapping data class
 and insert data 
 
 ```
-/*load data - example*/
 IEnumerable<Entity> entities = Array.Empty<Entity>();
 
 using (SqlConnection sqlConnection = new SqlConnection(@"{connectionString}"))
 {
       Bulk bulk = new Bulk(sqlConnection);
-      bulk.Insert<Entity>(entities);
+      bulk.Insert<Entity>(entities1);
 }
 ```
